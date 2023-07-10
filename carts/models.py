@@ -1,5 +1,6 @@
 from django.db import models
-from store.models import Product
+from store.models import Product, Variation
+
 
 # Create your models here.
 class Cart(models.Model):
@@ -12,6 +13,11 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    ## new 12 - Them dòng sau
+    variations = models.ManyToManyField(Variation, blank=True)
+    # Sau đó dùng lệnh: python manage.py makemigrations
+    # Và lệnh: python manage.py migrate
+    ## new 12
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
@@ -19,6 +25,8 @@ class CartItem(models.Model):
     def sub_total(self):
         return self.product.price * self.quantity
 
-    def __str__(self):
+    ## new 12 - Sửa __str__
+    def __unicode__(self):
         return self.product
+    ## new 12
 

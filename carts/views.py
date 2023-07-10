@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from carts.models import Cart, CartItem
-from store.models import Product
+from store.models import Product, Variation
 
 
 # Create your views here.
@@ -16,8 +16,30 @@ def _cart_id(request):
     return cart
 
 def add_cart(request, product_id):
-    #Lấy tất cả các product có id bằng product_id được truyền vào
+    ## new 12 (5)
+    ''' Lấy các bien color và size được truyền vào từ thanh url '''
+    # Lấy tất cả các product có id bằng product_id được truyền vào
     product = Product.objects.get(id=product_id)
+    product_variation = []
+
+    if request.method == 'POST':
+        for item in request.POST:
+            key = item
+            value = request.POST[key]
+
+            try:
+                variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+                # __iexact: So sánh không phân biệt chữ hoa, chữ thường
+                product_variation.append(variation)
+                # print(variation)
+            except:
+                pass
+
+
+        # color = request.GET['color']
+        # size = request.GET['size']
+
+    ## new 12 (5)
 
     #Thử
     try:

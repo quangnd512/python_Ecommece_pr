@@ -7,18 +7,12 @@ from store.models import Product, Variation
 
 # Create your views here.
 def _cart_id(request):
-    #Truy xuất session hiện tại. Session là duy nhất ở phiên người dùng
     cart = request.session.session_key
-
-    #Nếu không có session sẽ tạo session mới
     if not cart:
         cart = request.session.create()
     return cart
 
 def add_cart(request, product_id):
-    ## new 12 (5)
-    ''' Lấy các bien color và size được truyền vào từ thanh url '''
-    # Lấy tất cả các product có id bằng product_id được truyền vào
     product = Product.objects.get(id=product_id)
     product_variation = []
 
@@ -26,10 +20,8 @@ def add_cart(request, product_id):
         for item in request.POST:
             key = item
             value = request.POST[key]
-
             try:
                 variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
-                # __iexact: So sánh không phân biệt chữ hoa, chữ thường
                 product_variation.append(variation)
                 # print(variation)
             except:
@@ -39,41 +31,27 @@ def add_cart(request, product_id):
         # color = request.GET['color']
         # size = request.GET['size']
 
-    ## new 12 (5)
-
-    #Thử
     try:
-        # Lấy tất cả các cart có cart_id bằng _cart_id(request)
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
-        # Nếu không tìn thấy có cart_id = _cart_id(request) thì tạo mới cart_id bằng câu lệnh dưới
         cart = Cart.objects.create(
             cart_id = _cart_id(request)
         )
-    #Lưu vào cơ sở dữ liệu
     cart.save()
 
     try:
-        #Lấy tất cả các cart_item có product bằng giá trị product được set ở trên và cart bằng giá trị cart set ở trên
         cart_item = CartItem.objects.get(product=product, cart=cart)
-
-        # Và tăng quantity lên 1
         cart_item.quantity += 1
-
-        #Lưu vào cơ sở dữ liệu
         cart_item.save()
     except CartItem.DoesNotExist:
-        # Nếu không tìm thấy giá trị cart_item nào thì khởi tạo với các giá trị ở dưới
         cart_item = CartItem.objects.create(
             product = product,
             quantity = 1,
             cart = cart,
         )
-        # Lưu vào cơ sở dữ liệu
         cart_item.save()
 
-    #Sau đó chuyển hướng sang trang cart
-    return redirect('cart') # Tham số truyền vào là name trong urls.py
+    return redirect('cart')
 
 
 class ObjectNotExist:

@@ -18,11 +18,8 @@
 </article> <!-- gallery-wrap .end// -->
 		</aside>
 		<main class="col-md-6 border-left">
-<!--			## new12 (1) -->
-			<!-- thêm <form action="{% url 'add_cart' single_product.id %}" method="GET"> bao bọc thẻ article -->
 			<form action="{% url 'add_cart' single_product.id %}" method="POST">
 				{% csrf_token %}
-<!--			## new12 -->
 
 				<article class="content-body">
 
@@ -33,40 +30,27 @@
 				</div>
 
 				<p>{{ single_product.description }}</p>
-
-
-
 				<hr>
 					<div class="row">
 						<div class="item-option-select">
 							<h6>Choose Color</h6>
-<!--							## new 12 (3) thêm đoạn dưới -->
 							<select name="color" class="form-control" required>
 								<option value="" disabled selected>Select</option>
 								{% for i in single_product.variation_set.colors %}
-<!--								for i in single_product.variation_set.colors: Có nghĩa là lặp qua tất cả
-				các đối tượng của class Variation nếu thông qua 1 biến single_product của đối tuong Product
-				thì ta phải dùng variation_set do Django sinh ra (<class_name>_set) khi trong Variation có
-				khóa ngoại voi đối tượng Product.
--->
 								<option value="{{ i.variation_value }}">{{ i.variation_value | capfirst }}</option>
-<!--								capfirst: Viết hoa chữ cái đầu tiên khi được hiển thị-->
 								{% endfor %}
 							</select>
-<!--							## new 12 (3)-->
 						</div>
 					</div> <!-- row.// -->
 					<div class="row">
 						<div class="item-option-select">
 							<h6>Select Size</h6>
-<!--							## new 12 (4) thêm đoạn dưới -->
 							<select name="size" class="form-control">
 								<option value="" disabled selected>Select</option>
 								{% for i in single_product.variation_set.sizes %}
 								<option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
 								{% endfor %}
 							</select>
-<!--							## new 12 (4)-->
 						</div>
 					</div> <!-- row.// -->
 					<hr>
@@ -74,22 +58,11 @@
 					{% if single_product.stock <= 0 %}
 					<h5 class="text-danger">Out of Stock</h5>
 					{% else %}
-						{% if in_cart %}
-							<a href="{% url 'add_cart' single_product.id %}" class="btn  btn-success"> <span class="text">Add to cart</span> <i class="fas fa-check"></i>  </a>
-							<a href="{% url 'cart' %}" class="btn  btn-outline-primary"> <span class="text">View cart</span> <i class="fas fa-check"></i>  </a>
-						{% else %}
-<!--					## new 12 (2)-->
-						<!-- Sửa thẻ a thành button, thêm type bằng submit và xóa href -->
 							<button style="submit" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </button>
-<!--						## new 12 (2) -->
-						{% endif %}
 					{% endif %}
 
 				</article> <!-- product-info-aside .// -->
-		<!--			## new12 (1) -->
-			<!-- thêm </form>  đẻ đóng thẻ <form action=""> tren đó -->
 			</form>
-<!--			## new12 -->
 
 		</main> <!-- col.// -->
 	</div> <!-- row.// -->

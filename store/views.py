@@ -14,7 +14,6 @@ def store(request, category_slug=None):
     products = None
 
     if category_slug != None:
-        # Tìm trong db Category nếu slug=category_slug thì trả về sản phẩm, Nếu không phải trả về 404
         categories = get_object_or_404(Category, slug=category_slug)
 
         products = Product.objects.all().filter(category=categories, is_available=True)
@@ -40,10 +39,6 @@ def store(request, category_slug=None):
 def product_detail(request, category_slug, product_slug):
     try:
         single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
-        '''
-        category__slug được hiểu là đang truy vấn tới slug của Category thông qua quan hệ category
-        tức là category__slug là đang gọi đến slug của model category  
-        '''
 
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
 
@@ -64,8 +59,6 @@ def search(request):
             products = Product.objects.order_by('-created_date').filter(
                 Q(description__icontains=keyword) |
                 Q(product_name__icontains= keyword))
-            # __icontains: là một cách tìm kiếm trong Django được sử dụng để so sánh chuỗi một cách không phân biệt chữ hoa/chữ thường trong câu truy vấn cơ sở dữ liệu.
-            # Q là một đối tượng được sử dụng để xây dựng các điều kiện truy vấn phức tạp. Nó cho phép bạn tạo ra các biểu thức truy vấn logic AND, OR, NOT để tìm kiếm dữ liệu trong cơ sở dữ liệu.
             product_count = products.count()
 
         context = {
@@ -73,4 +66,3 @@ def search(request):
             'product_count': product_count,
         }
     return render(request, 'store/store.html', context)
-
